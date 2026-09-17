@@ -137,7 +137,7 @@ class Cricket {
             name: "teamB",
             total: 0,
             wickets: 0,
-            overs: 0,,
+            overs: 0,
             players: [],
             order: null,
         };
@@ -146,8 +146,61 @@ class Cricket {
         });
 
         this.battingTeam = null;
-        
+        this.bowlingTeam = null;
+        this.striker = null;;
+        this.nonStriker = null;
+        this.bowler = null;
+        this.totalOvers = +totalOvers.value;     
     }
+
+
+toss(firstBatting) {
+
+    if(!firstBatting) {
+        const tossWon = Math.random() > 0.5 ? 0 : 1
+;
+
+if (tossWon) {
+    this.teamA.order = "bat";
+    this.teamB.order = "chase";
+
+    this.battingTeam = this.teamA;
+    this.bowlingTeam = this.teamB;
+} else {
+    this.teamA.order = "chase";
+    this.teamB.order = "bat";
+
+    this.battingTeam = this.teamB;
+    this.bowlingTeam = this.teamA;
 }
 
 
+} else{
+    if (firstBatting == "teamA"){
+        this.team.order = "bat";
+        this.teamB.order = "chase";
+
+        this.battingTeam = this.teamA;
+        this.bowlingTeam = this.teamB;
+     } else {
+        if (firstBatting == "teamA") {
+            this.teamA.order = "chase";
+            this.teamB.order = "bat";
+
+            this.battingTeam = this.teamB;
+            this.bowlingTeam = this.teamA;
+        }
+     }
+}
+
+   async initializeInnings() {
+
+    ballHistory.innerHTML = "";
+
+    await this.setStriker();
+    await this.setNonStriker();
+    await this.setBowler();
+    modal.hide();
+ }
+}
+}
