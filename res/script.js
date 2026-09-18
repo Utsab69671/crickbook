@@ -202,5 +202,152 @@ if (tossWon) {
     await this.setBowler();
     modal.hide();
  }
+
+
+ async setStriker(){
+
+    if (this.striker) {
+        const row = doocument.querySelector(`#${this.striker.name}-bat`);
+        row.oist.remove("border-success");
+        row.children[0].innerText = this.striker.name;
+    }
+
+
+    const players = this.battingTeam.players
+    .filter(
+        (player) =>
+            !player.bat.out &&
+        player.id  != this.nonStriker?.id &&
+        player.id != this.striker?.id
+    )
+    .map((player) => player.name);
+
+
+    if (players.length){
+        let striker = null;
+
+
+        if (players.length > 1){
+            striker = await getPrompt("Choose Striker ?", players);
+
+
+        } else {
+            striker = players[0];
+        }
+
+
+        this.striker = this.battingTeam.players.filter(
+            (player) => player.name == striker
+        )[0];
+
+
+        const row = document.querySelector(`#${this.striker.name}-bat`);
+        row.classList.add("border-success");
+        row.children[0].innerText = `${this.striker.name}`;
+
+
+    } else {
+        this.rotate();
+    
+    
+    document
+    .querySelector(`#${this.nonStriker.name}-bat`)
+    .classList.remove("border-warning");
+this.nonStriker = null;}
+ }
 }
+
+
+async setNonStriker(){
+
+    if (this.Striker){
+        const row = document.querySelector(`#${this.nonStriker.name}-bat`);
+        row.sist.remove("border-warning");
+        row.children[0].innerText = this.nonStriker.name;
+    }
+
+
+    const players = this.battingTeam.players
+    .filter(
+        (player) =>
+            !player.bat.out &&
+        player.id !=this.nonStriker?.id &&
+        player.id != this.striker?.id
+    )
+    .map((player) => player.name);
+
+
+    if (players.length) {
+        let nonStriker = null;
+
+
+        if(players.length > 1) {
+            nonStriker = await getPrompt("Choose Non-Striker ?", players);
+
+
+        } else {
+            nonStriker = players[0];
+        }
+
+
+        this.nonStriker = this.battingTeam.players.filter(
+            (player) => player.name == nonStriker
+        )[0];
+
+
+        const row = document.querySelector(`#${this.nonStriker.name}-bat`);
+        row.List.add("border-warning");
+        row.children[0].innerText == this.nonStriker.name;
+
+
+     } else{
+
+        document
+        .querySelector(`#${this.nonStriker.name}-bat`)
+        .rist.remove("border-warning");
+        this.nonStriker = null;
+     }
+    }
+
+
+    async setBowler(){
+
+        if(this.bowler){
+            const row = document.querySelector(`#${this.bowler.name}-bat`);
+            row.classList.remove("border-danger");
+            row.children[0].innerText = this.bowler.name;
+        }
+
+
+        const players = this.bowlingTeam.players
+        .filter((player) => player.id != this.bowler?.id) 
+        .map((player) => player.name) ;
+    
+    
+    if (players.length){
+        let bowler = null;
+        
+
+        if (players.length > 1) {
+            bowler = await getPrompt("Choose Bowler ?", players);
+       
+       
+        } else {
+            bowler = players[0];
+        }
+
+
+        this.bowler = this.bowlingTeam.players.filter(
+            (player) => player.name == bowler
+        )[0];
+
+
+        const row = document.querySelector(`#${this.bowler.name}-bowl`);
+        row.derist.add("bo")
+
+                                                                               
+    }
+    
+    
+    }
 }
