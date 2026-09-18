@@ -343,11 +343,161 @@ async setNonStriker(){
 
 
         const row = document.querySelector(`#${this.bowler.name}-bowl`);
-        row.derist.add("bo")
+        row.classList.add("border-danger");
+        row.children[0].innerText = `${this.bowler.name}`;
+     }
+ }
 
-                                                                               
-    }
-    
-    
-    }
-}
+//Rotate Strike
+     rotate() {
+
+        if (this.striker && this.nonStriker){
+            [this.striker, this.nonStriker] = [this.nonStriker, this.striker];
+
+
+            const striker = document.querySelector(`#${this.striker.name}-bat`);
+            const nonStriker = document.querySelector(`#${this.nonStriker.name}-bat`);
+            striker.className = "border-success";
+            nonStriker.className = "border-warning";
+            striker.children[0].innerText = `${this.striker.name}`;
+            nonStriker.children[0].innerText = this.nonStriker.name;
+        }
+     } 
+
+
+     async handleEvent(event){
+        let outcome = null;
+
+        event = isNan(+event) ? event : +event;
+
+
+        if (event == "Ro") {
+            match.rotate();
+            return;
+
+
+        } else if (event == "W"){
+            this.battingTeam.wicketz += 1;
+            this.battingTeam.overs += 1;
+
+
+            const runs = +(await getPrompt("Runs made if Run-Out ?", [0, 1, 2, 3]));
+            this.battingTeam.total += runs;
+            this.striker.hitBall(runs);
+            this.bowler.throwBall(event, runs);
+
+
+            if (runs) {
+                event = `${event}+${runs}`;
+            }
+
+
+            if (this.nonStriker) {
+            const wicket = await getPrompt("Who got Out", [
+                this.striker.name,
+                this.nonStriker.name,
+            ]);
+
+
+            if( wicket == this.striker.name) {
+                this.striker.hitBall("W", false);
+                await this.setStriker();
+
+
+            } else if (wicket == this.nonStriker.name) {
+                this.nonStriker.hitBall("W", false);
+                await this.setNonStriker();
+            }
+
+
+            } else {
+                this.striker.hitBall("W", false);
+
+
+                const row = document.querySelector(`#${this.striker.name}-bat`);
+                row.className = "";
+                row.children[0].innerText = this.striker.name;
+
+
+                if (this.battingTeam.order == "bat"){
+                    outcome = [null, null, "endofInnings"];
+
+                
+                } else {
+                    if (this.battingTeam.order == "bat"){
+
+                        outcome = [null, null, "Draw"];
+                    } else{
+
+                    const margin = this.bowlingTeam.total - this.battingTeam.total;
+                    outcome = [this.bowlingTeam, margin, "Runs"];
+                    }
+                }
+            }
+
+
+        } else if(!["N", "Wd", "Re"].includes(event)){
+            this.striker.hitBall(event);
+            this.bowler.throwBall(event);
+
+            this.battingTeam.total += event;
+            this.battingTeam.overs += 1;
+
+            if(event % 2 == 1) {
+
+                this.rotate();
+            }
+
+
+        } else if(event != "Re"){
+
+            const runs = +(await getPrompt("Additional runns made ?", [
+                0,
+                1,
+                2,
+                3,
+                4,
+                6,
+            ]));
+
+
+            this.bowler.throwBall(event, runs);
+
+            if (runs){
+
+                if (event == "N"){
+                    this.striker.hitBall(runs, false);
+                }
+
+
+            if (runs % 2 ==1){
+                this.rotated();
+            }
+
+
+            event = `${event}+${runs}`;
+            }
+            this.battingTeam.total += 1+ runs;
+                }
+
+
+                const team = scoreSummary[this.battingTeam.id];
+                team["total"].innerText = this.battingTeam.total;
+                team["wickets"].innerText = this.battingTeam.wickets;
+                team["overs"].innerText = `${match.floor(this.battingTeam.overs / 6)}.${
+                    this.battingTeam.overs % 6
+                }`;
+
+
+                if (ballHistory.childElementCount == 10){
+                    ballHistory.firstElementChild.remove();
+                }
+                ballHistory.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                    
+                    <span class="badge bg-secondary">${event}</span>
+                    `
+                );
+                 }
+            }
