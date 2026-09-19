@@ -1,6 +1,5 @@
-// Link footer to GitHub
-document.querySelector("#footer").addEventListener("click", (event) => {
-  window.open("https://github.com/mochatek", "_blank");
+document.querySelector("#footer").addEventListener("click", () => {
+    window.open("https://github.com/Utsab69671", "_blank");
 });
 
 // DOM element reference
@@ -881,4 +880,4 @@ async function startMatch() {
   };
 
   await match.initializeInnings(); // Initialize the innings
-} 
+}
